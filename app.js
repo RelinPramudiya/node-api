@@ -3,14 +3,26 @@ const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
+const cors = require('cors')
 require('dotenv/config')
+mongoose.set('strictQuery', false);
 
-// (6) middleware body-parser
-// https://stackoverflow.com/questions/24330014/bodyparser-is-deprecated-express-4
+// (6) body-parser
 app.use(bodyParser.urlencoded({
     extended: true
-}));
-app.use(bodyParser.json());
+}))
+app.use(bodyParser.json())
+app.use(cors())
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    if ('OPTIONS' == req.method) {
+       res.sendStatus(200);
+     }
+     else {
+       next();
+     }});
 
 // (7) import routes
 const sRoutes = require('./routes/s')
